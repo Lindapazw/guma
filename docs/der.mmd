@@ -1,0 +1,195 @@
+erDiagram
+  %% ===================== CATALOGOS BASE =====================
+  ROLES {
+    INT id_rol PK
+    VARCHAR rol
+  }
+  SEXOS {
+    INT id_sexo PK
+    VARCHAR sexo
+  }
+  PAISES {
+    INT id_pais PK
+    VARCHAR nombre
+  }
+  PROVINCIAS {
+    INT id_provincia PK
+    INT id_pais FK
+    VARCHAR nombre
+  }
+  LOCALIDADES {
+    INT id_localidad PK
+    INT id_provincia FK
+    VARCHAR nombre
+  }
+  DIRECCIONES {
+    INT id_direccion PK
+    TEXT nombre
+    INT codigo_postal
+    VARCHAR calle
+    INT numero
+    VARCHAR depto
+    TEXT referencia
+    DOUBLE latitud
+    DOUBLE longitud
+    INT id_localidad FK
+  }
+  IMAGES {
+    INT id_images PK
+    TEXT link
+  }
+  REDES_SOCIALES {
+    INT id_red_social PK
+    VARCHAR nombre
+    TEXT link
+  }
+  ESPECIES {
+    INT id_especie PK
+    VARCHAR especie
+  }
+  RAZAS {
+    INT id_raza PK
+    VARCHAR name
+    INT id_especie FK
+  }
+  ESTADO_VITAL {
+    INT id_estado_vital PK
+    VARCHAR estado
+  }
+  ESTADO_REPRODUCTIVOS {
+    INT id_estado_reproductivo PK
+    VARCHAR name
+  }
+  NIVEL_ACTIVIDAD {
+    INT id_nivel_actividad PK
+    VARCHAR descripcion
+  }
+  TIPO_ALIMENTACION {
+    INT id_tipo_alimentacion PK
+    VARCHAR descripcion
+  }
+  TEMPERAMENTOS {
+    INT id_temperamento PK
+    VARCHAR descripcion
+  }
+  COLOR {
+    INT id_color PK
+    VARCHAR nombre
+  }
+  TAMANO {
+    INT id_tamano PK
+    VARCHAR nombre
+  }
+  RANGO_EDAD {
+    INT id_rango_edad PK
+    VARCHAR nombre
+  }
+
+  %% ===================== USUARIOS =====================
+  USUARIOS {
+    INT id_usuario PK
+    VARCHAR email
+    VARCHAR contrasena
+    INT id_rol FK
+    TINYINT verified
+    DATETIME ultima_conexion
+  }
+  PERFIL_USUARIOS {
+    INT id_perfil_usuario PK
+    INT id_usuario FK
+    INT id_sexo FK
+    INT dni
+    VARCHAR nombre
+    VARCHAR apellido
+    DATE fecha_nacimiento
+    VARCHAR email
+    VARCHAR telefono
+    INT id_direccion FK
+    INT id_red_social FK
+    INT foto_perfil FK
+    TINYINT verificado
+  }
+
+  %% ===================== MASCOTAS =====================
+  MASCOTAS {
+    INT id_mascota PK
+    VARCHAR nombre
+    INT id_raza FK
+    INT id_sexo FK
+    DATE fecha_nacimiento
+    INT edad_aproximada
+    DECIMAL peso
+    INT id_estado_reproductivo FK
+    INT id_nivel_actividad FK
+    INT id_tipo_alimentacion FK
+    VARCHAR alimento_descripcion
+    INT id_temperamento FK
+    DATE ultima_fecha_celo
+    INT numero_crias
+    TEXT descripcion
+    INT image_id FK
+    CHAR qr_id
+    INT id_color FK
+    INT id_tamano FK
+    INT id_estado_vital FK
+    INT id_rango_edad FK
+    TINYINT activo
+  }
+
+  MASCOTA_DUENO {
+    INT id_mascota_dueno PK
+    INT id_mascota FK
+    INT id_perfil_usuario FK
+    DATE fecha_alta
+    TINYINT activo
+  }
+
+  %% ===================== SEGUROS =====================
+  TIPOS_SEGUROS {
+    INT id_tipo_seguro PK
+    VARCHAR nombre
+  }
+  SEGUROS {
+    INT id_seguro PK
+    TEXT nombre
+    TEXT descripcion
+    VARCHAR codigo
+    INT id_tipo_seguro FK
+  }
+  SEGUROS_MASCOTAS {
+    INT id_seguro_mascota PK
+    INT id_seguro FK
+    INT id_mascota FK
+  }
+
+  %% ===================== RELACIONES =====================
+  PAISES ||--o{ PROVINCIAS : "contiene"
+  PROVINCIAS ||--o{ LOCALIDADES : "contiene"
+  LOCALIDADES ||--o{ DIRECCIONES : "contiene"
+
+  ROLES ||--o{ USUARIOS : "rol"
+  USUARIOS ||--|| PERFIL_USUARIOS : "tiene"
+  SEXOS ||--o{ PERFIL_USUARIOS : "sexo"
+  DIRECCIONES ||--o{ PERFIL_USUARIOS : "domicilio"
+  REDES_SOCIALES ||--o{ PERFIL_USUARIOS : "red"
+  IMAGES ||--o{ PERFIL_USUARIOS : "foto"
+
+  ESPECIES ||--o{ RAZAS : "agrupa"
+  RAZAS ||--o{ MASCOTAS : "clasifica"
+  SEXOS ||--o{ MASCOTAS : "define"
+  ESTADO_REPRODUCTIVOS ||--o{ MASCOTAS : "repro"
+  NIVEL_ACTIVIDAD ||--o{ MASCOTAS : "actividad"
+  TIPO_ALIMENTACION ||--o{ MASCOTAS : "alimenta"
+  TEMPERAMENTOS ||--o{ MASCOTAS : "temperamento"
+  IMAGES ||--o{ MASCOTAS : "imagen"
+  COLOR ||--o{ MASCOTAS : "color"
+  TAMANO ||--o{ MASCOTAS : "tamaño"
+  ESTADO_VITAL ||--o{ MASCOTAS : "estado"
+  RANGO_EDAD ||--o{ MASCOTAS : "rango"
+
+  MASCOTAS ||--o{ MASCOTA_DUENO : "posee"
+  PERFIL_USUARIOS ||--o{ MASCOTA_DUENO : "es_dueno"
+
+  TIPOS_SEGUROS ||--o{ SEGUROS : "tipo"
+  SEGUROS ||--o{ SEGUROS_MASCOTAS : "asignado"
+  MASCOTAS ||--o{ SEGUROS_MASCOTAS : "asegurada"
